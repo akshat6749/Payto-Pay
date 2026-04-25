@@ -1,0 +1,14 @@
+import { createRootRoute, Outlet } from "@tanstack/react-router";
+
+export const Route = createRootRoute({
+    component: RootLayout,
+});
+
+function RootLayout() {
+    return (
+        <div className="min-h-screen bg-gray-950 text-gray-100">
+            {/* Global nav / shell will go here in a later step */}
+            <Outlet />
+        </div>
+    );
+}

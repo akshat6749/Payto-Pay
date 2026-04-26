@@ -1,4 +1,8 @@
 from django.urls import path
 
-# API routes will be registered here in Step 2 (views & serializers).
-urlpatterns: list = []
+from .views import MerchantBalanceView, PayoutView
+
+urlpatterns = [
+    path("merchants/balance/", MerchantBalanceView.as_view(), name="merchant-balance"),
+    path("payouts/", PayoutView.as_view(), name="payouts"),
+]

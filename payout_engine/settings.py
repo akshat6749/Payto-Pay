@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Third-party
     "rest_framework",
+    "django_q",
     # Local
     "payout_engine.core",
 ]
@@ -106,5 +107,10 @@ REST_FRAMEWORK = {
     ],
 }
 
-# ─── Async task integration (placeholder for Django-Q2 / Celery) ─────────────
-# Q_CLUSTER settings will be added in Step 2 when async workers are wired up.
+# ─── Async task integration (Django-Q2) ─────────────────────────────
+Q_CLUSTER = {
+    "name": "payout_engine",
+    "orm": "default",  # Uses the PostgreSQL DB as a message broker
+    "sync": False,
+    "retry": 60,
+}

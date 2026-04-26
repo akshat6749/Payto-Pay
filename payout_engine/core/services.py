@@ -22,6 +22,7 @@ from datetime import timedelta
 from django.db import IntegrityError, transaction
 from django.db.models import Sum
 from django.utils import timezone
+from django_q.tasks import async_task
 
 from .exceptions import IdempotencyConflict, InsufficientFunds
 from .models import (
@@ -194,6 +195,10 @@ def process_payout_request(
         idem_record.response_body = response_body
         idem_record.locked_at = None  # release the processing lock
         idem_record.save(update_fields=["response_status", "response_body", "locked_at"])
+
+    # ── 8. KICK OFF BACKGROUND TASK ──────────────────────────────────────────
+    # Trigger the worker asynchronously now that the transaction is committed
+    async_task('payout_engine.core.tasks.process_payout_task', payout_id)
 
     return response_body
 

@@ -2,6 +2,25 @@
 
 **Playto Pay** is a robust B2B payment engine designed to simulate asynchronous financial payouts with strict concurrency, mathematical precision, and idempotency controls. It leverages PostgreSQL row-level locks and an immutable ledger system to prevent double-spend vulnerabilities during simultaneously processed transactions.
 
+## 🛠 Tech Stack
+
+### Backend (The Payout Engine)
+- **Django & Django REST Framework (DRF):** Core application framework for the API and business logic.
+- **PostgreSQL:** Primary database, leveraging **Row-Level Locking** (`SELECT FOR UPDATE`) to handle concurrent transactions safely.
+- **Django-Q2:** Asynchronous task queue for processing payouts in the background, ensuring high availability and system responsiveness.
+- **Double-Entry Ledger:** An append-only ledger system where balances are derived from historical entries rather than mutable columns.
+
+### Frontend (The Dashboard)
+- **React:** Component-based UI library for a dynamic, modern dashboard.
+- **Vite:** High-performance build tool and development server.
+- **TanStack Router:** Type-safe, declarative routing for seamless navigation.
+- **TanStack Query (React Query):** Synchronized server-state management for real-time transaction tracking.
+- **Tailwind CSS v4:** Modern, utility-first styling with high-performance CSS orchestration.
+
+### Testing & Quality Assurance
+- **Pytest & Pytest-Django:** Robust testing framework used to validate engine integrity.
+- **Concurrency Simulations:** Testing race conditions via `ThreadPoolExecutor` to mathematically prove double-spend prevention.
+
 ## Prerequisites
 Before you begin, ensure you have the following installed on your machine:
 - **Python** (3.11 or higher)

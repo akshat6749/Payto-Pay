@@ -106,11 +106,14 @@ def process_payout_request(
         now = timezone.now()
 
         try:
-            idem_record = IdempotencyRecord.objects.create(
-                key=idempotency_key,
-                merchant_id=merchant_id,
-                locked_at=now,
-            )
+            # Wrap in its own atomic block so the Postgres transaction
+            # isn't irrevocably broken by the IntegrityError.
+            with transaction.atomic():
+                idem_record = IdempotencyRecord.objects.create(
+                    key=idempotency_key,
+                    merchant_id=merchant_id,
+                    locked_at=now,
+                )
         except IntegrityError:
             # Row already exists — fetch it to decide what to do.
             idem_record = (

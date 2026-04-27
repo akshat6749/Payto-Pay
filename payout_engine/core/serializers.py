@@ -7,7 +7,7 @@ PayoutRequestSerializer – write-only, used for incoming POST body validation.
 
 from rest_framework import serializers
 
-from .models import Payout
+from .models import Merchant, BankAccount, Payout
 
 
 class PayoutSerializer(serializers.ModelSerializer):
@@ -42,3 +42,17 @@ class PayoutRequestSerializer(serializers.Serializer):
 
     bank_account_id = serializers.UUIDField()
     amount_paise = serializers.IntegerField(min_value=1)
+
+class MerchantSerializer(serializers.ModelSerializer):
+    """Read-only serializer for Merchant list."""
+    class Meta:
+        model = Merchant
+        fields = ["id", "name", "created_at"]
+        read_only_fields = fields
+
+class BankAccountSerializer(serializers.ModelSerializer):
+    """Read-only serializer for Bank Account list."""
+    class Meta:
+        model = BankAccount
+        fields = ["id", "merchant_id", "account_number", "ifsc", "created_at"]
+        read_only_fields = fields

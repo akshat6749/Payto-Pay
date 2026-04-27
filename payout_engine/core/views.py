@@ -18,7 +18,7 @@ from rest_framework.views import APIView
 
 from .exceptions import IdempotencyConflict, InsufficientFunds
 from .models import BankAccount, Merchant, Payout
-from .serializers import PayoutRequestSerializer, PayoutSerializer
+from .serializers import PayoutRequestSerializer, PayoutSerializer, MerchantSerializer, BankAccountSerializer
 from .services import get_merchant_balance, process_payout_request
 
 
@@ -171,3 +171,45 @@ class PayoutView(APIView):
         serializer = PayoutSerializer(payouts, many=True)
 
         return Response(serializer.data)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# GET /api/v1/merchants/
+# GET /api/v1/bank-accounts/
+# ─────────────────────────────────────────────────────────────────────────────
+
+class MerchantListView(APIView):
+    """List all merchants for the dashboard dynamic switcher."""
+
+    permission_classes = [AllowAny]
+
+    def get(self, request: Request) -> Response:
+        merchants = Merchant.objects.all().order_by("name")
+        serializer = MerchantSerializer(merchants, many=True)
+        return Response(serializer.data)
+
+
+class BankAccountListView(APIView):
+    """List bank accounts belonging to the authenticated merchant."""
+
+    permission_classes = [AllowAny]
+
+    def get(self, request: Request) -> Response:
+        try:
+            merchant_id = _extract_merchant_id(request)
+        except ValueError as exc:
+            return Response(
+                {"error": str(exc)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Verify the merchant exists
+        if not Merchant.objects.filter(id=merchant_id).exists():
+            return Response(
+                {"error": "Merchant not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        bank_accounts = BankAccount.objects.filter(merchant_id=merchant_id).order_by("-created_at")
+        serializer = BankAccountSerializer(bank_accounts, many=True)
+        return Response(serializer.data)
+

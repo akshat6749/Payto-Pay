@@ -112,5 +112,6 @@ Q_CLUSTER = {
     "name": "payout_engine",
     "orm": "default",  # Uses the PostgreSQL DB as a message broker
     "sync": False,
-    "retry": 60,
+    "timeout": 60,     # Worker will kill a task if it takes longer than 60s
+    "retry": 120,      # Broker will wait 120s before giving the task to a new worker
 }

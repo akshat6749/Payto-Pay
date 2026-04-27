@@ -12,7 +12,7 @@ function StatusBadge({ status }: { status: string }) {
         return <span className="inline-flex items-center px-1.5 py-0.5 text-[9px] font-mono uppercase tracking-widest font-bold border border-orange-500/30 bg-orange-500/10 text-orange-600 dark:bg-[#FF8C69]/10 dark:text-[#FF8C69]">Proc_Wait</span>;
     }
     if (status === 'COMPLETED') {
-        return <span className="inline-flex items-center px-1.5 py-0.5 text-[9px] font-mono uppercase tracking-widest font-bold border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:bg-[#9EFFBF]/10 dark:text-[#9EFFBF]">Exec_OK</span>;
+        return <span className="inline-flex items-center px-1.5 py-0.5 text-[9px] font-mono uppercase tracking-widest font-bold border border-[#1A3C2B]/30 bg-[#1A3C2B]/10 text-[#1A3C2B] dark:border-[#1A3C2B] dark:bg-[#9EFFBF] dark:text-[#1A3C2B]">Exec_OK</span>;
     }
     if (status === 'FAILED') {
         return <span className="inline-flex items-center px-1.5 py-0.5 text-[9px] font-mono uppercase tracking-widest font-bold border border-rose-500/30 bg-rose-500/10 text-rose-600 dark:bg-[#FF007F]/10 dark:text-[#FF007F]">Sig_Err</span>;

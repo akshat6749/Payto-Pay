@@ -3,6 +3,7 @@ from pathlib import Path
 
 import environ
 import dj_database_url
+from corsheaders.defaults import default_headers
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,6 +27,11 @@ CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[
     "http://localhost:5173", # Local Vite dev server
     "https://payto-pay.vercel.app",
 ])
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "x-merchant-id",
+    "idempotency-key",
+]
 
 # ─── Application ─────────────────────────────────────────────────────────────
 INSTALLED_APPS = [

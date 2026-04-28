@@ -21,6 +21,17 @@
 - **Pytest & Pytest-Django:** Robust testing framework used to validate engine integrity.
 - **Concurrency Simulations:** Testing race conditions via `ThreadPoolExecutor` to mathematically prove double-spend prevention.
 
+## 🌍 Architecture & Deployment
+
+The Playto Pay ecosystem uses a modern, distributed architecture to ensure scalability and reliable processing. The system is split into three main operational environments:
+
+*   **Frontend (Vercel):** The React/Vite dashboard is deployed on Vercel for fast global CDN delivery, edge-caching, and seamless SPA hosting.
+*   **Backend API (Render):** The core Django REST Framework application and the managed PostgreSQL database are deployed on Render, handling all synchronous API requests, row-level concurrency locks, and ledger math.
+*   **Background Worker (Railway):** The `Django-Q2` asynchronous background worker (`qcluster`) is deployed on Railway. It isolates the heavy task processing—such as hitting bank APIs for simulated payouts and handling backoff retries—without blocking the main Render web API.
+
+> [!TIP]
+> For a deep dive into the ledger system, concurrency locks, and polling logic, see the full [**Technical Architecture Guide**](./ARCHITECTURE.md).
+
 ## Prerequisites
 Before you begin, ensure you have the following installed on your machine:
 - **Python** (3.11 or higher)

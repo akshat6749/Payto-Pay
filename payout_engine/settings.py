@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 import environ
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -11,9 +12,19 @@ env = environ.Env(
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 # ─── Security ────────────────────────────────────────────────────────────────
-SECRET_KEY = env("SECRET_KEY", default="django-insecure-change-me-in-production")
-DEBUG = env("DEBUG", default=True)
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = env('SECRET_KEY', default='django-insecure-change-me-in-production')
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = env('DEBUG')
+
+# Set allowed hosts; dynamically parse a comma-separated string from Render
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['127.0.0.1', 'localhost'])
+
+# Allow Vercel to dynamically communicate with the backend
+CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[
+    "http://localhost:5173", # Local Vite dev server
+])
 
 # ─── Application ─────────────────────────────────────────────────────────────
 INSTALLED_APPS = [
@@ -24,6 +35,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Third-party
+    "corsheaders",
     "rest_framework",
     "django_q",
     # Local
@@ -31,6 +43,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -65,9 +78,10 @@ ASGI_APPLICATION = "payout_engine.asgi.application"
 # All monetary values MUST be stored as BigIntegerField in paise.
 # Merchant balance is NEVER stored — always derived from LedgerEntry aggregation.
 DATABASES = {
-    "default": env.db(
-        "DATABASE_URL",
-        default="postgresql://payout_user:payout_pass@localhost:5432/payout_db",
+    'default': dj_database_url.config(
+        default=env('DATABASE_URL', default='postgres://postgres:postgres@localhost:5432/playtopay_db'),
+        conn_max_age=600,
+        conn_health_checks=True,
     )
 }
 

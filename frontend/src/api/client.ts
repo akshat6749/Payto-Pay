@@ -1,4 +1,8 @@
-export const API_BASE_URL = '/api/v1';
+const rawApiUrl = import.meta.env.VITE_API_URL as string | undefined;
+const normalizedApiUrl = rawApiUrl?.replace(/\/+$/, "");
+export const API_BASE_URL = normalizedApiUrl
+    ? (normalizedApiUrl.endsWith("/api/v1") ? normalizedApiUrl : `${normalizedApiUrl}/api/v1`)
+    : "/api/v1";
 
 export interface Merchant {
     id: string;

@@ -24,6 +24,7 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['127.0.0.1', 'localhost'])
 # Allow Vercel to dynamically communicate with the backend
 CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[
     "http://localhost:5173", # Local Vite dev server
+    "https://payto-pay.vercel.app/"
 ])
 
 # ─── Application ─────────────────────────────────────────────────────────────

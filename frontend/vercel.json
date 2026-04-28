@@ -1,0 +1,8 @@
+{
+    "rewrites": [
+        {
+            "source": "/api/:path*",
+            "destination": "https://payto-pay.onrender.com/api/:path*"
+        }
+    ]
+}

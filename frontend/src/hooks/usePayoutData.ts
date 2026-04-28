@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import { fetchBankAccounts, fetchBalance, fetchMerchants, fetchPayouts, requestPayout, type PayoutRequest } from '../api/client';
 
 export const useMerchants = () => {
@@ -25,12 +26,20 @@ export const useBalance = (merchantId: string) => {
 };
 
 export const usePayouts = (merchantId: string) => {
-    return useQuery({
+    const queryClient = useQueryClient();
+    const payoutsQuery = useQuery({
         queryKey: ['payouts', merchantId],
         queryFn: () => fetchPayouts(merchantId),
         refetchInterval: 3000,
         enabled: !!merchantId,
     });
+
+    useEffect(() => {
+        if (!merchantId || !payoutsQuery.data) return;
+        queryClient.invalidateQueries({ queryKey: ['balance', merchantId] });
+    }, [merchantId, payoutsQuery.data, queryClient]);
+
+    return payoutsQuery;
 };
 
 export const usePayoutMutation = (merchantId: string) => {
